@@ -35,16 +35,15 @@
                 let self = this;
                     return new Promise(function(resolve, reject) {
                             self.getBlocksCount().then((height) => {
-                                if (height != 0){ 
-                                        self.getBlock(height - 1).then((bloco) => {
-                                            var chainHeight = height - 1;
+                                console.log(height);
+                                if (height >= 0){ 
+                                        self.getBlock(height).then((bloco) => {
+                                            var chainHeight = height;
                                             newBlock.height = chainHeight + 1;
                                             // UTC timestamp
                                             newBlock.time = new Date().getTime().toString().slice(0,-3);
                                             // previous block hash
-                                            if(newBlock.height > 0){
-                                              newBlock.previousBlockHash = bloco.hash;
-                                            }
+                                            newBlock.previousBlockHash = bloco.hash;
                                             // Block hash with SHA256 using newBlock and converting to a string
                                             newBlock.hash = SHA256(JSON.stringify(newBlock)).toString();
                                             //Record in database
@@ -89,12 +88,11 @@
                 })
             }
 
-
             // Method that return the height of the chain
             getBlocksCount() {
                 let self = this;
                 return new Promise(function(resolve, reject) {
-                    let i = 0;
+                    let i = -1;
                     self.db.createReadStream().
                         on('data', function(data) {
                             i++;
@@ -137,7 +135,7 @@
                     let errorLog = [];
                     let promises = [];
                     self.getBlocksCount().then((height) => {
-                        for (var i = 0; i < height; i++) {
+                        for (var i = 0; i <= height; i++) {
                             promises.push(self.validateBlock(i));
                         }
                         Promise.all(promises)
