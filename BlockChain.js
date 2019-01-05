@@ -16,7 +16,7 @@
         // Generate the Genesis Block (the first block)
         generateGenesisBlock(){
             this.getBlockHeight().then((height) => {
-                if (height == 0){
+                if (height == -1){
                     this.addBlock(new Block.Block("Genesis Block")).then((result) => {
                         console.log(result);
                     }).catch((err) =>  {
